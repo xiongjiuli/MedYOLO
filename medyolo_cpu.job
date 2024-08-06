@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --job-name=medyolo
+#SBATCH --partition=bme_cpu
+#SBATCH --cpus-per-task=4
+#SBATCH --output=./log/%jout_cpu.out
+#SBATCH --error=./log/%jerr_cpu.out
+#SBATCH -N 1   
+#SBATCH --mem 20G
+#SBATCH -t 48:00:00
+
+
+echo ${SLURM_JOB_NODELIST}$
+echo start on $(data)
+# generate the box mask
+python ./utils3D/nifti_utils.py \
+        --nifti-dir /public_bme/data/xiongjl/medyolo_data/images/train \
+        --bbox-dir /public_bme/data/xiongjl/medyolo_data/labels/train \
+        --mask-dir /public_bme/data/xiongjl/medyolo_data/mask_result \
+        --mask-tag _1 \
+        --single-mask
+
+# python /public_bme/data/xiongjl/medyolo_data/medyoloz_data_generate.py
+
+echo end on $(data) 

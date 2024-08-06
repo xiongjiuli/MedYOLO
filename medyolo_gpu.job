@@ -1,0 +1,27 @@
+#!/bin/bash
+#SBATCH --job-name=medyolo
+#SBATCH --partition=bme_gpu 
+#SBATCH --output=./log/%j_out.out
+#SBATCH --error=./log/%j_err.out
+#SBATCH -N 1
+#SBATCH -n 8    
+#SBATCH --mem 80G
+#SBATCH --gres=gpu:NVIDIAA10080GBPCIe:1
+#SBATCH -t 48:00:00
+ 
+
+
+echo ${SLURM_JOB_NODELIST}$
+echo start on $(data)
+# python ./utils3D/nifti_utils.py \
+#         --nifti-dir /public_bme/data/xiongjl/medyolo_data/images/train \
+#         --bbox-dir /public_bme/data/xiongjl/medyolo_data/labels/train \
+#         --mask-dir /public_bme/data/xiongjl/medyolo_data/mask_result \
+#         --mask-tag 1 \
+#         --single-mask
+
+python train.py --data example.yaml --adam --norm CT --epochs 300 --patience 870 --device 0 \
+                --weights /public_bme/data/xiongjl/MedYOLO/runs/train/exp26/weights/last.pt \
+                --workers 2
+
+# echo end on $(data)
